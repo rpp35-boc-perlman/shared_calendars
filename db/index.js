@@ -5,15 +5,9 @@ const pool = new Pool({
   database: 'calentodo',
   password: 'root'
 })
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.log(err);
-    return
-  } else {
-    console.log('connected successfully')
-  }
-  pool.end()
-})
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+}
 // const client = new Client({
 //   user: 'root',
 //   host: 'localhost',
