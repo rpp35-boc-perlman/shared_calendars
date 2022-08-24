@@ -1,9 +1,9 @@
 const { Pool, Client } = require('pg')
 const pool = new Pool({
-  user: 'root',
+  user: 'danielweiner',
   host: 'localhost',
   database: 'calentodo',
-  password: 'root'
+
 })
 module.exports = {
   query: (text, params) => pool.query(text, params),
