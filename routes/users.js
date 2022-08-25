@@ -24,18 +24,31 @@ router.post('/:id/share', async (req, res) => {
   id = parseInt(id)
   console.log('id', id, typeof id)
 
-
-  const { rows } = await db.query(`SELECT user_id FROM users WHERE user_email = $1`, [email])
+  var { rows } = await db.query(`SELECT user_id FROM users WHERE user_email = $1`, [email])
   var friendId = rows[0].user_id
+  console.log('friendid', friendId, typeof friendId)
 
-  const text = `INSERT INTO friends (uid, friend) VALUES ($1, $2) RETURNING *`
-  const values = [friendId, id]
-  try {
-    const response = await db.query(text, values)
 
-    res.json(response.rows[0]);
-    // { name: 'brianc', email: 'brian.m.carlson@gmail.com' }
-  } catch (err) {
-    console.log(err.stack)
+  var { rows }  = await db.query(`SELECT * FROM friends where uid = $1 and friend = $2`, [friendId, id])
+  console.log(rows, 'friends rows')
+  if (rows.length === 0) {
+    const text = `INSERT INTO friends (uid, friend) VALUES ($1, $2) RETURNING *`
+    const values = [friendId, id]
+    try {
+      const response = await db.query(text, values)
+
+      res.json(response.rows[0]);
+      // { name: 'brianc', email: 'brian.m.carlson@gmail.com' }
+    } catch (err) {
+      console.log(err.stack)
+    }
+
+  } else {
+    res.json('nope')
+
+
+
   }
+
+
 })
