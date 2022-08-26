@@ -11,8 +11,41 @@ router.get('/:id', async (req, res) => {
   id = parseInt(id)
   console.log('id', id, typeof id)
 
-  const { rows } = await db.query(`SELECT * FROM users WHERE user_id = $1`, [id])
-  res.send(rows[0])
+  var { rows } = await db.query(`SELECT friend FROM friends WHERE uid = $1`, [id])
+
+  var friends = [];
+  for (var i = 0; i < rows.length; i++) {
+    friends.push(rows[i].friend)
+  }
+  console.log('friends', friends)
+
+  var { rows } = await db.query(`SELECT user_id, user_email FROM users WHERE user_id = ANY($1::int[])`, [friends])
+  var users = rows;
+
+  var { rows } = await db.query(`SELECT * FROM todos WHERE user_id = ANY($1::int[])`, [friends])
+  var todos = rows
+
+  for (var row of rows) {
+    var id = row.user_id;
+    for (var user of users) {
+      if (id === user.user_id) {
+        if ('todos' in user) {
+          user.todos.push(row);
+        } else {
+          user.todos = [];
+          user.todos.push(row)
+        }
+      }
+    }
+  }
+
+  var result = {
+    users: users,
+
+  }
+  res.json(result)
+
+
 })
 
 router.post('/:id/share', async (req, res) => {
@@ -46,9 +79,5 @@ router.post('/:id/share', async (req, res) => {
   } else {
     res.json('nope')
 
-
-
   }
-
-
 })
