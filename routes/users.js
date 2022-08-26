@@ -55,9 +55,11 @@ router.post('/:id/share', async (req, res) => {
   console.log(email)
 
   id = parseInt(id)
-  console.log('id', id, typeof id)
 
-  var { rows } = await db.query(`SELECT user_id FROM users WHERE user_email = $1`, [email])
+
+  var { rows } = await db.query(`SELECT * FROM users where user_email = $1`, [email])
+  console.log('rows', rows)
+  res.json(rows);
   var friendId = rows[0].user_id
   console.log('friendid', friendId, typeof friendId)
 
