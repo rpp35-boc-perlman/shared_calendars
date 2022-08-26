@@ -13,7 +13,7 @@ router.get('/:id', async (req, res) => {
 
   var { rows } = await db.query(`SELECT friend FROM friends WHERE uid = $1`, [id])
 
-  var friends = [];
+  var friends = [id];
   for (var i = 0; i < rows.length; i++) {
     friends.push(rows[i].friend)
   }
