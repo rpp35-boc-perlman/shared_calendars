@@ -10,12 +10,14 @@ var bodyParser = require('body-parser')
 const mountRoutes = require('./routes')
 
 var app = express();
+
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
 mountRoutes(app);
 // var connect = require('./db')
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
